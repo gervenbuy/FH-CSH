@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>邱士恆｜BNI 一對一資料簡報</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ① 配色系統 —— 每份簡報只需要改這一段(依主題自由設計)
+   ============================================================ */
+:root{
+  --bg:#14120F;            /* 頁面底色 —— 深炭黑，呼應車業質感 */
+  --surface:#1C1915;       /* 卡片底色 */
+  --surface2:#242019;      /* 次卡片底色 */
+  --ink:#F3EEE4;           /* 主文字 */
+  --muted:#A79C89;         /* 次要文字(對比仍需足夠) */
+  --accent:#D6A24C;        /* 主強調色 —— 銅金 */
+  --accent-soft:rgba(214,162,76,.14);
+  --accent2:#C0562E;       /* 次強調色 —— 車漆橘紅 */
+  --accent2-soft:rgba(192,86,46,.14);
+  --line:rgba(167,156,137,.18);
+  --serif:'Noto Serif TC','PMingLiU',serif;
+  --sans:'Noto Sans TC','Microsoft JhengHei',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+
+/* ============================================================
+   ② 基礎與簡報機制 —— 以下原樣保留,不要重寫
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300}
+button{font-family:inherit}
+
+#progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;z-index:60;transition:width .45s cubic-bezier(.4,0,.2,1)}
+#hud{position:fixed;bottom:22px;right:28px;z-index:60;display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+#hud .count b{color:var(--ink);font-weight:600}
+#hud .navbtn{background:var(--surface2);border:1px solid var(--line);color:var(--ink);width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:15px;display:grid;place-items:center;transition:.2s}
+#hud .navbtn:hover{border-color:var(--accent);color:var(--accent)}
+
+.slide{position:absolute;inset:0;display:none;padding:clamp(40px,6vh,72px) clamp(48px,7vw,110px);flex-direction:column;justify-content:center}
+.slide.active{display:flex}
+
+/* 進場動畫:任何元素加 data-animate 即套用;同頁多個元素自動錯開 */
+.slide.active [data-animate]{opacity:0;transform:translateY(18px);animation:rise .55s cubic-bezier(.4,0,.2,1) forwards;animation-delay:calc(var(--i,0)*.09s)}
+@keyframes rise{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){
+  .slide.active [data-animate]{animation:none;opacity:1;transform:none}
+  #progress{transition:none}
+}
+
+/* ============================================================
+   ③ 常用版面元件 —— 依需要取用/擴充
+   ============================================================ */
+.kicker{font-family:var(--mono);font-size:clamp(12px,1.2vw,14px);letter-spacing:.22em;color:var(--accent);text-transform:uppercase;margin-bottom:18px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(40px,5.2vw,76px);line-height:1.15}
+h2{font-family:var(--serif);font-weight:700;font-size:clamp(30px,3.6vw,52px);line-height:1.2;margin-bottom:28px}
+.lead{font-size:clamp(16px,1.6vw,21px);color:var(--muted);line-height:1.8;max-width:64ch}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px 28px}
+.card h3{font-family:var(--serif);font-size:clamp(18px,1.7vw,24px);margin-bottom:12px;color:var(--accent)}
+.card p,.card li{font-size:clamp(14px,1.3vw,17px);line-height:1.75;color:var(--ink)}
+ul.plain{list-style:none}
+ul.plain li{padding-left:1.4em;position:relative;margin-bottom:.6em}
+ul.plain li::before{content:"◆";position:absolute;left:0;color:var(--accent);font-size:.7em;top:.45em}
+.bignum{font-family:var(--serif);font-weight:900;font-size:clamp(80px,11vw,160px);color:var(--accent);line-height:1}
+.flow{display:flex;align-items:stretch;gap:0}
+.flow .step{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;text-align:center}
+.flow .arrow{display:grid;place-items:center;padding:0 10px;color:var(--accent);font-size:24px}
+.divider-slide{align-items:center;text-align:center}
+.tag{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:20px;padding:4px 14px;font-size:13px;margin:0 4px 8px 0}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:start}
+.card.top{border-color:var(--accent);background:linear-gradient(180deg,var(--accent-soft),var(--surface))}
+.card.top h3{color:var(--accent)}
+.card .rank{font-family:var(--mono);font-size:12px;color:var(--accent2);letter-spacing:.15em;margin-bottom:6px}
+.quote{border-left:3px solid var(--accent);padding:10px 22px;font-family:var(--serif);font-size:clamp(18px,2vw,26px);color:var(--ink);line-height:1.6;margin:14px 0}
+table.info{width:100%;border-collapse:collapse}
+table.info th,table.info td{text-align:left;padding:10px 14px;font-size:clamp(13px,1.15vw,15px);border-bottom:1px solid var(--line)}
+table.info th{color:var(--accent);font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+table.info td.num{color:var(--muted);font-family:var(--mono)}
+.badge-good{color:var(--accent);font-weight:600}
+.badge-bad{color:var(--accent2);font-weight:600}
+.grid2col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.photo-frame{width:clamp(140px,16vw,220px);height:clamp(140px,16vw,220px);border-radius:50%;border:2px dashed var(--accent);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--muted);font-family:var(--mono);font-size:12px;background:var(--surface)}
+.photo-frame svg{width:38%;height:38%;opacity:.5}
+.photo-img{width:clamp(140px,16vw,220px);height:clamp(140px,16vw,220px);border-radius:50%;object-fit:cover;border:2px solid var(--accent)}
+.cover-with-photo{display:flex;align-items:center;gap:clamp(32px,5vw,64px)}
+.grid9{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:18px}
+.grid9 .card{display:flex;align-items:center;justify-content:center;text-align:center;min-height:110px}
+
+/* ============================================================
+   ④ 列印版面 —— 原樣保留(Ctrl+P 即可輸出 PDF)
+   ============================================================ */
+@media print{
+  html,body{overflow:visible;height:auto}
+  #progress,#hud{display:none!important}
+  .slide{position:relative;display:flex!important;inset:auto;width:100%;height:100vh;page-break-after:always;break-after:page}
+  .slide [data-animate]{opacity:1!important;transform:none!important;animation:none!important}
+}
+@page{size:landscape;margin:0}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="hud">
+  <span class="count"><b id="cur">1</b> / <span id="total">?</span></span>
+  <button class="navbtn" id="prev" aria-label="上一頁">‹</button>
+  <button class="navbtn" id="next" aria-label="下一頁">›</button>
+</div>
+
+<!-- ============================================================
+     投影片內容:每頁一個 <section class="slide">
+     以下三頁為版型示範,實際製作時全數替換
+     ============================================================ -->
+
+<!-- 01 封面(含大頭照預留) -->
+<section class="slide divider-slide">
+  <div class="cover-with-photo">
+    <div class="photo-frame" data-animate style="--i:0">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5z"/></svg>
+      大頭照
+    </div>
+    <div>
+      <div class="kicker" data-animate style="--i:1">BNI 豐華鑽石分會｜一對一資料</div>
+      <h1 data-animate style="--i:2">邱士恆</h1>
+      <p class="lead" data-animate style="--i:3" style="margin-top:24px">毅泰國際有限公司．毅泰汽車行．亦泰租賃有限公司｜負責人</p>
+      <p data-animate style="--i:4" style="margin-top:32px;color:var(--muted);font-size:15px">車輛販售．企業租賃．新舊車顧問｜114.3.26</p>
+    </div>
+  </div>
+</section>
+
+<!-- 02 基本資料 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">SECTION 01 · 會員資料表</div>
+  <h2 data-animate style="--i:1">基本資料</h2>
+  <div class="cols">
+    <div class="card" data-animate style="--i:2">
+      <h3>個人</h3>
+      <ul class="plain">
+        <li>生日：79.12.11</li>
+        <li>學歷：弘光科技大學</li>
+        <li>居住地：台中市（30 年）</li>
+      </ul>
+    </div>
+    <div class="card" data-animate style="--i:3">
+      <h3>公司</h3>
+      <ul class="plain">
+        <li>毅泰國際有限公司／毅泰汽車行／亦泰租賃有限公司</li>
+        <li>地址：台中市東勢區豐勢路 125 號</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 03 商業資訊 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">SECTION 01 · 會員資料表</div>
+  <h2 data-animate style="--i:1">商業資訊</h2>
+  <div class="cols">
+    <div class="card" data-animate style="--i:2">
+      <h3>專業領域</h3>
+      <p>車輛販售、代售中古車、汽車配件、網路代標中古車，全台新車總代理買車模式比較，企業車輛租賃、租購。</p>
+    </div>
+    <div class="card" data-animate style="--i:3">
+      <h3>資歷</h3>
+      <ul class="plain">
+        <li>前職：三菱汽車、雙龍汽車（汽車銷售）</li>
+        <li>目前行業經驗：15 年</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 04 個人資訊 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">SECTION 01 · 會員資料表</div>
+  <h2 data-animate style="--i:1">個人資訊</h2>
+  <div class="cols">
+    <div class="card" data-animate style="--i:2">
+      <h3>生活側寫</h3>
+      <ul class="plain">
+        <li>寵物：烏龜、流浪貓</li>
+        <li>業餘愛好：吃美食、聊天、運動</li>
+      </ul>
+    </div>
+    <div class="card" data-animate style="--i:3">
+      <h3>感興趣活動</h3>
+      <ul class="plain">
+        <li>健身房、籃球、游泳</li>
+        <li>說走就走的旅行、腳踏車</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 05 綜合資訊 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">SECTION 01 · 會員資料表</div>
+  <h2 data-animate style="--i:1">綜合資訊</h2>
+  <div class="quote" data-animate style="--i:2">先不管結果如何、總之先做就對了；想要天時的幫助，自己也要有地利跟人和的資本。</div>
+  <div class="cols" data-animate style="--i:3">
+    <div class="card">
+      <h3>強烈願望</h3>
+      <ul class="plain">
+        <li>透過 BNI 鏈結台灣 100 家科技公司車輛供應</li>
+        <li>車輛在中心區 BNI 做輪轉租用</li>
+        <li>推廣短租台中送車到府</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>從業狀況與展望</h3>
+      <p>目前有中古車行、租賃公司、遊覽車公司，未來計畫經銷新車、汽車配件，再衝一家甲種租賃營業項目。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 06 GAINS 隔頁 -->
+<section class="slide divider-slide">
+  <div class="kicker" data-animate style="--i:0">SECTION 02</div>
+  <h1 data-animate style="--i:1">GAINS 工作表</h1>
+  <p class="lead" data-animate style="--i:2">Goals．Accomplishment．Interest．Networks．Skills</p>
+</section>
+
+<!-- 07 Goals -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">G · GOALS</div>
+  <h2 data-animate style="--i:1">目標</h2>
+  <div class="flow" data-animate style="--i:2">
+    <div class="step"><h3 style="color:var(--accent);margin-bottom:8px">短期</h3>台中到府送車（平民車）<br>賣車 3 台／月</div>
+    <div class="arrow">→</div>
+    <div class="step"><h3 style="color:var(--accent);margin-bottom:8px">中期</h3>包月租用車，先租再買<br>賣車 5 台／月</div>
+    <div class="arrow">→</div>
+    <div class="step"><h3 style="color:var(--accent);margin-bottom:8px">長期</h3>公司／企業長租用車<br>租車／賣車 10 台／月</div>
+  </div>
+</section>
+
+<!-- 08 Accomplishment -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">A · ACCOMPLISHMENT</div>
+  <h2 data-animate style="--i:1">成就</h2>
+  <ul class="plain" data-animate style="--i:2">
+    <li>2016 年 SAVE 認證中古車，中區銷售第一名</li>
+    <li>服務口碑扎實，曾讓同一位業者一年介紹 10 位客人買車</li>
+    <li>半年靠健身房與運動成功管理體態，展現高度自律</li>
+    <li>有能力一次性履約 150 台租賃車</li>
+    <li>擔任新車經理人期間，同一客戶 3 年內回購 7 台車</li>
+  </ul>
+</section>
+
+<!-- 09 Interest / Networks / Skills -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">I · N · S</div>
+  <h2 data-animate style="--i:1">興趣、人際關係、技巧</h2>
+  <div class="cols3">
+    <div class="card" data-animate style="--i:2">
+      <h3>興趣愛好</h3>
+      <p>健身房（業務/客戶）、游泳（業務）、羽球（BNI/JCI）、吃美食旅遊（業務/異地客戶）、桌遊（JCI）、開車趴趴走（業務）</p>
+    </div>
+    <div class="card" data-animate style="--i:3">
+      <h3>人際關係</h3>
+      <p>JCI、中古車行、汽車配件商、新車公司、租賃公司、果農、南北貨</p>
+    </div>
+    <div class="card" data-animate style="--i:4">
+      <h3>技巧</h3>
+      <p>車況安全性分析，汽車配件門路，各門道經驗豐富</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10 業務人脈圈隔頁 -->
+<section class="slide divider-slide">
+  <div class="kicker" data-animate style="--i:0">SECTION 03</div>
+  <h1 data-animate style="--i:1">業務人脈圈規劃表</h1>
+  <p class="lead" data-animate style="--i:2">由行業建立的引薦來源，彼此不競爭、卻能互相支持增強</p>
+</section>
+
+<!-- 11 業務人脈圈前三名 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">SECTION 03</div>
+  <h2 data-animate style="--i:1">業務人脈圈．前三名</h2>
+  <div class="cols3" data-animate style="--i:2">
+    <div class="card top"><div class="rank">TOP 1</div><h3>工程行</h3><p>工程車、施工團隊接送車</p></div>
+    <div class="card top"><div class="rank">TOP 2</div><h3>科技廠公司</h3><p>外商長短期用車、工程師購車、業務外勤用車</p></div>
+    <div class="card top"><div class="rank">TOP 3</div><h3>營造公司</h3><p>工程車、施工團隊接送車</p></div>
+  </div>
+  <p class="lead" data-animate style="--i:3" style="margin-top:24px">其他人脈圈：製造商、中部科技園區、工廠、婚紗業、飯店業、外商公司、台商</p>
+  <div class="quote" data-animate style="--i:4">30 秒自我介紹：「大家好，我是車商代表士恆。不論是要購置新車、中古車、網路代標車，或是短期租用車（台中短租我們到府送車）、上下班定點交通車、代駕接送，都可以想到我；也提供先租用喜歡再買的體驗方案。」</div>
+</section>
+
+<!-- 12 最近十位客戶 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">SECTION 03</div>
+  <h2 data-animate style="--i:1">最近十位客戶</h2>
+  <table class="info" data-animate style="--i:2">
+    <tr><th>#</th><th>車款</th><th>類型</th><th>客戶產業</th></tr>
+    <tr><td class="num">1</td><td>卡旺</td><td>全新車</td><td>營造商</td></tr>
+    <tr><td class="num">2</td><td>Santa Fe</td><td>全新車</td><td>牙醫師</td></tr>
+    <tr><td class="num">3</td><td>卡旺</td><td>中古車</td><td>土地開發</td></tr>
+    <tr><td class="num">4</td><td>ZINGER</td><td>中古車</td><td>環安清潔</td></tr>
+    <tr><td class="num">5</td><td>ALTIS</td><td>全新車</td><td>美容美睫</td></tr>
+    <tr><td class="num">6</td><td>卡旺大單箱</td><td>全新車</td><td>營造</td></tr>
+    <tr><td class="num">7</td><td>LEXUS</td><td>中古車</td><td>品牌形象顧問</td></tr>
+    <tr><td class="num">8</td><td>ALTIS</td><td>全新車</td><td>律師</td></tr>
+    <tr><td class="num">9</td><td>三菱 8 人座</td><td>中古車</td><td>家庭用車</td></tr>
+    <tr><td class="num">10</td><td>現代小霸王</td><td>全新車</td><td>鋁門窗</td></tr>
+  </table>
+</section>
+
+<!-- 13 產業九宮格隔頁 -->
+<section class="slide divider-slide">
+  <div class="kicker" data-animate style="--i:0">SECTION 04</div>
+  <h1 data-animate style="--i:1">產業九宮格</h1>
+  <p class="lead" data-animate style="--i:2">以本人為中心，盤點周邊八個互補行業</p>
+</section>
+
+<!-- 13b 產業九宮格 3x3 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">產業九宮格</div>
+  <h2 data-animate style="--i:1">相關產業九宮格</h2>
+  <div class="grid9" data-animate style="--i:2">
+    <div class="card">科技公司<br><span style="color:var(--muted);font-size:.8em">（公司勞務採購含以上職務）</span></div>
+    <div class="card">營造公司</div>
+    <div class="card">工程行</div>
+    <div class="card">保險業務／理賠（車險）<br><span style="color:var(--muted);font-size:.8em">事故代步車</span></div>
+    <div class="card top">士恆<br><span style="font-size:.85em">中古車商</span></div>
+    <div class="card">中部科學園區<br><span style="color:var(--muted);font-size:.8em">（公司勞務採購含以上職位）</span></div>
+    <div class="card">台／外商公司</div>
+    <div class="card">民間汽車保養廠</div>
+    <div class="card">汽車配件廠<br><span style="color:var(--muted);font-size:.8em">（改裝品／工程用／車用設備）</span></div>
+  </div>
+</section>
+
+<!-- 13c DANCE CARD 隔頁 -->
+<section class="slide divider-slide">
+  <div class="kicker" data-animate style="--i:0">SECTION 05</div>
+  <h1 data-animate style="--i:1">DANCE CARD</h1>
+  <p class="lead" data-animate style="--i:2">產品服務、競爭優勢、目標市場、引薦準則一次盤點</p>
+</section>
+
+<!-- 14 產品服務 + 競爭優勢 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">DANCE CARD · Q1 Q2</div>
+  <h2 data-animate style="--i:1">產品服務與競爭優勢</h2>
+  <div class="cols">
+    <div class="card" data-animate style="--i:2">
+      <h3>提供的產品與服務</h3>
+      <ul class="plain">
+        <li>中古車買賣（全台比較差異）、舊車換新車、舊車換舊車</li>
+        <li>汽車產險（有證照）、卡旺台中預約取車回廠保養</li>
+        <li>企業長租需求（純租／租購／靠行）</li>
+      </ul>
+    </div>
+    <div class="card" data-animate style="--i:3">
+      <h3>與競爭對手的不同</h3>
+      <ul class="plain">
+        <li>在地 37 年經營，車輛說明透明化</li>
+        <li>自家車 + 網路拍場雙管道</li>
+        <li>省去比較話術與地域限制，優先選各地區優惠、避開不良業務</li>
+        <li>租賃／售後一條龍，授權寬度與速度高</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 15 目標市場 + 未出現行業 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">DANCE CARD · Q3 Q4</div>
+  <h2 data-animate style="--i:1">目標市場與待補行業</h2>
+  <div class="cols">
+    <div class="card" data-animate style="--i:2">
+      <h3>目標市場／主力客群</h3>
+      <p>企業、大公司通路、外資｜採購、管理層、經理人（決策者）</p>
+    </div>
+    <div class="card" data-animate style="--i:3">
+      <h3>分會中尚未出現的相關行業</h3>
+      <ul class="plain">
+        <li>汽車裝潢</li>
+        <li>汽車材料行</li>
+        <li>企業／大公司通路／外資</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 16 機會訊號 + 開場白 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">DANCE CARD · Q5 Q6</div>
+  <h2 data-animate style="--i:1">機會訊號與引薦開場白</h2>
+  <div class="quote" data-animate style="--i:2">「我的這台車怎樣怎樣的」「最近想換車啊～」「車太大或太小了，猶豫要不要換」</div>
+  <div class="card" data-animate style="--i:3">
+    <h3>幫他找客戶的開場白</h3>
+    <p>「我的夥伴家中做汽車產業 30 多年了，只要你有需求，他可以幫你在北中南比較最適合你的車輛。」</p>
+  </div>
+</section>
+
+<!-- 17 引薦品質 + 常見誤解 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">DANCE CARD · Q7 Q8 Q9</div>
+  <h2 data-animate style="--i:1">引薦品質與常見誤解</h2>
+  <div class="cols">
+    <div class="card" data-animate style="--i:2">
+      <h3>如何衡量引薦品質</h3>
+      <p>是否真的要買車、預計哪時買，還是只是看看而已 — 答案愈具體愈理想。</p>
+      <h3 style="margin-top:18px">不合適的引薦</h3>
+      <ul class="plain">
+        <li>只是說說，沒有明確需求</li>
+        <li>要求超低預算的好車況</li>
+        <li>舊車想賣高價、新車只要修過的便宜貨</li>
+      </ul>
+    </div>
+    <div class="card" data-animate style="--i:3">
+      <h3>常見誤解</h3>
+      <p>「業務獎金很多啦，便宜一點我下次再介紹」— 資訊透明的時代，優惠都已反映在成交價，願意轉介紹才有紅包空間。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 19 引薦來源 + 好壞引薦 -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">引薦來源</div>
+  <h2 data-animate style="--i:1">引薦來源與好壞判斷</h2>
+  <div class="cols">
+    <div class="card" data-animate style="--i:2">
+      <h3>引薦來源</h3>
+      <ul class="plain">
+        <li>舊客戶轉介紹、掃街開發</li>
+        <li>配合店家放 DM、保養廠客戶換車</li>
+        <li>BNI、JCI 介紹</li>
+      </ul>
+    </div>
+    <div class="card" data-animate style="--i:3">
+      <h3>好引薦 vs 壞引薦</h3>
+      <p><span class="badge-good">好：</span>明確理解自己需求、有規劃預算</p>
+      <p style="margin-top:8px"><span class="badge-bad">壞：</span>不知道自己要什麼、沒預算、一直比價不尊重專業</p>
+    </div>
+  </div>
+</section>
+
+<!-- 20 結尾 -->
+<section class="slide divider-slide">
+  <div class="kicker" data-animate style="--i:0">CALL TO ACTION</div>
+  <h1 data-animate style="--i:1">幫士恆找到對的引薦</h1>
+  <p class="lead" data-animate style="--i:2" style="margin-top:20px">優先鎖定：科技公司、營造公司、工程行 — 有明確用車需求與預算的窗口，都是最理想的引薦！</p>
+  <p data-animate style="--i:3" style="margin-top:48px;color:var(--muted);font-size:15px">毅泰國際．毅泰汽車行．亦泰租賃｜邱士恆</p>
+</section>
+
+<!-- ============================================================
+     簡報引擎 —— 原樣保留,不要修改
+     ============================================================ -->
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  const total=slides.length;
+  document.getElementById('total').textContent=total;
+  let cur=Math.min(Math.max(parseInt(location.hash.slice(1))||1,1),total)-1;
+
+  function show(i){
+    cur=Math.min(Math.max(i,0),total-1);
+    slides.forEach((s,idx)=>{
+      s.classList.remove('active');
+      if(idx===cur){ void s.offsetWidth; s.classList.add('active'); }
+    });
+    document.getElementById('cur').textContent=cur+1;
+    document.getElementById('progress').style.width=((cur+1)/total*100)+'%';
+    history.replaceState(null,'','#'+(cur+1));
+  }
+
+  document.getElementById('prev').onclick=()=>show(cur-1);
+  document.getElementById('next').onclick=()=>show(cur+1);
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();show(cur+1);}
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();show(cur-1);}
+    else if(e.key==='Home')show(0);
+    else if(e.key==='End')show(total-1);
+    else if(e.key==='f'||e.key==='F'){
+      if(!document.fullscreenElement){document.documentElement.requestFullscreen?.();}
+      else{document.exitFullscreen?.();}
+    }
+  });
+  addEventListener('hashchange',()=>{
+    const n=parseInt(location.hash.slice(1));
+    if(n&&n-1!==cur)show(n-1);
+  });
+
+  show(cur);
+})();
+</script>
+</body>
+</html>
