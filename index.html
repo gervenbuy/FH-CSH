@@ -88,6 +88,12 @@ table.info td.num{color:var(--muted);font-family:var(--mono)}
 .cover-with-photo{display:flex;align-items:center;gap:clamp(32px,5vw,64px)}
 .grid9{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:18px}
 .grid9 .card{display:flex;align-items:center;justify-content:center;text-align:center;min-height:110px}
+.cta-row{display:flex;gap:18px;margin-top:32px;flex-wrap:wrap}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:var(--bg);font-family:var(--sans);font-weight:700;padding:14px 30px;border-radius:999px;text-decoration:none;font-size:clamp(14px,1.3vw,16px);transition:.2s;border:1.5px solid var(--accent)}
+.cta-btn:hover{opacity:.85}
+.cta-btn.secondary{background:transparent;color:var(--accent)}
+.more-link{display:inline-block;margin-top:22px;color:var(--muted);font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.more-link:hover{color:var(--accent)}
 
 /* ============================================================
    ④ 列印版面 —— 原樣保留(Ctrl+P 即可輸出 PDF)
@@ -441,6 +447,52 @@ table.info td.num{color:var(--muted);font-family:var(--mono)}
   <h1 data-animate style="--i:1">幫士恆找到對的引薦</h1>
   <p class="lead" data-animate style="--i:2" style="margin-top:20px">優先鎖定：科技公司、營造公司、工程行 — 有明確用車需求與預算的窗口，都是最理想的引薦！</p>
   <p data-animate style="--i:3" style="margin-top:48px;color:var(--muted);font-size:15px">毅泰國際．毅泰汽車行．亦泰租賃｜邱士恆</p>
+</section>
+
+<!-- 20b 服務方案(電商神助手 大軍) -->
+<section class="slide">
+  <div class="kicker" data-animate style="--i:0">電商神助手．大軍</div>
+  <h2 data-animate style="--i:1">想要更有質感？三種方案任選</h2>
+  <div class="cols3" data-animate style="--i:2">
+    <div class="card">
+      <h3>基本版．NT$0</h3>
+      <ul class="plain">
+        <li>BNI 資料轉專業 HTML 簡報</li>
+        <li>九宮格／DANCE CARD 版位</li>
+        <li>簡報首尾頁置入品牌曝光</li>
+      </ul>
+    </div>
+    <div class="card top">
+      <h3>進階版．NT$1,000</h3>
+      <ul class="plain">
+        <li>含基本版全部內容</li>
+        <li>大頭照裁切精修</li>
+        <li>客製主題配色＋Logo 置入</li>
+        <li>去除品牌曝光頁</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>客製版．NT$1,500</h3>
+      <ul class="plain">
+        <li>含進階版全部內容</li>
+        <li>Hero Section 開場封面重製</li>
+        <li>加開公司簡介／其他頁面</li>
+      </ul>
+    </div>
+  </div>
+  <p class="lead" data-animate style="--i:3" style="margin-top:24px">公司內部要用？樣板包 NT$500（自己填）／代工客製 NT$1,200–1,800，歡迎洽詢</p>
+</section>
+
+<!-- 21 服務推廣頁(電商神助手 大軍) -->
+<section class="slide divider-slide">
+  <div class="kicker" data-animate style="--i:0">電商神助手．大軍</div>
+  <h1 data-animate style="--i:1">讓你的 BNI 一對一資料也升級成專業簡報</h1>
+  <p class="lead" data-animate style="--i:2" style="margin-top:16px">免費優化製作，只要提供完整並更新後的 BNI 一對一表 PDF 或 WORD 檔即可開始</p>
+  <div class="cta-row" data-animate style="--i:3">
+    <a class="cta-btn" href="https://lin.ee/8VHhSuH" target="_blank">立即安排優化製作屬於你的 BNI PPT</a>
+    <a class="cta-btn secondary" href="https://drive.google.com/drive/folders/1e6ASwXzk4raOXJdcU0SjSm7knbrVuvUY?usp=sharing" target="_blank">上傳你的 PDF／WORD 檔</a>
+  </div>
+  <a class="more-link" data-animate style="--i:4" href="https://gervenbuy.github.io/ppt-up/" target="_blank">查看完整方案與報價 →</a>
 </section>
 
 <!-- ============================================================
